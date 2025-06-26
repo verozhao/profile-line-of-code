@@ -1,30 +1,65 @@
 # Profile Line of Code
 
-An API I built to track my coding activity across all my GitHub repositories. It counts lines of code by language and generates clean badges that I can embed in my README files.
+Track your coding activity across all your GitHub repositories. Get detailed statistics by programming language and generate beautiful badges for your README files.
 
 [![Total Lines of Code](https://profile-line-of-code.vercel.app/api/user/verozhao/badge?style=total)](https://profile-line-of-code.vercel.app/api/user/verozhao)
 [![Repositories](https://profile-line-of-code.vercel.app/api/user/verozhao/badge?style=repos)](https://profile-line-of-code.vercel.app/api/user/verozhao)
 
-## What it does
+![Code Statistics](https://profile-line-of-code.vercel.app/api/user/verozhao/card)
 
-- Scans all my public repositories and counts lines of code
-- Supports 50+ programming languages with proper detection
-- Breaks down statistics: actual code vs comments vs blank lines
-- Generates SVG badges I can drop into any README
-- Creates visual stats cards showing my language distribution
-- Caches results so it's fast and doesn't hit GitHub rate limits
-- Works with GitHub Actions to keep stats updated automatically
+## Features
 
-## How to use it
+- **Comprehensive Analysis**: Scans all your public repositories and counts lines of code
+- **50+ Languages**: Supports JavaScript, TypeScript, Python, Java, C++, Go, Rust, HTML, CSS, and more
+- **Detailed Statistics**: Breaks down actual code vs comments vs blank lines
+- **Beautiful Badges**: Generates SVG badges you can embed in any README
+- **Visual Stats Cards**: Creates professional-looking statistics cards
+- **Smart Caching**: Fast responses without hitting GitHub rate limits
+- **GitHub Actions Ready**: Automate badge updates in your workflows
 
-### API Endpoints
+## Quick Start
 
-#### Get User Statistics
+### Get Your Badges
+
+Simply replace `username` with your GitHub username:
+
+```markdown
+![Total Lines of Code](https://profile-line-of-code.vercel.app/api/user/username/badge?style=total)
+![JavaScript Lines](https://profile-line-of-code.vercel.app/api/user/username/badge?style=language&language=JavaScript)
+![Code Statistics](https://profile-line-of-code.vercel.app/api/user/username/card)
+```
+
+### Badge Options
+
+**Total Lines Badge:**
+```
+https://profile-line-of-code.vercel.app/api/user/username/badge?style=total
+```
+
+**Language-Specific Badge:**
+```
+https://profile-line-of-code.vercel.app/api/user/username/badge?style=language&language=JavaScript
+```
+
+**Repository Count Badge:**
+```
+https://profile-line-of-code.vercel.app/api/user/username/badge?style=repos
+```
+
+**Stats Card:**
+```
+https://profile-line-of-code.vercel.app/api/user/username/card
+```
+
+## API Endpoints
+
+### Get User Statistics
 ```
 GET /api/user/{username}
 ```
 
-Example response:
+Returns comprehensive statistics for all repositories:
+
 ```json
 {
   "username": "octocat",
@@ -46,104 +81,146 @@ Example response:
 }
 ```
 
-#### Generate Badges
+### Generate Badges
 ```
 GET /api/user/{username}/badge?style={style}&language={language}
 ```
 
-**Badge Styles:**
-- `total` - Total lines of code across all languages
-- `language` - Lines for a specific language (requires `language` parameter)
-- `repos` - Repository count
+**Parameters:**
+- `style`: `total`, `language`, or `repos`
+- `language`: Required for language-specific badges (e.g., `JavaScript`, `Python`)
 
-#### Generate Stats Card
+### Generate Stats Card
 ```
 GET /api/user/{username}/card
 ```
 
-### Example usage
+Creates a beautiful visual statistics card showing your top languages and coding activity.
 
-Just replace `username` with your GitHub username:
+### Other Endpoints
 
-```markdown
-![Total Lines of Code](https://profile-line-of-code.vercel.app/api/user/username/badge?style=total)
-![JavaScript Lines](https://profile-line-of-code.vercel.app/api/user/username/badge?style=language&language=JavaScript)
-![My Code Stats](https://profile-line-of-code.vercel.app/api/user/username/card)
-```
+| Endpoint | Description |
+|----------|-------------|
+| `/api/repo/{owner}/{repo}` | Get statistics for a specific repository |
+| `/api/languages` | List all supported programming languages |
+| `/api/rate-limit` | Check current rate limit status |
+| `/health` | API health check |
 
-## Running it yourself
+## Supported Languages
 
-If you want to deploy your own instance:
+The API detects 50+ programming languages including:
 
-1. Clone this repo and install dependencies:
+**Popular Languages:** JavaScript, TypeScript, Python, Java, C++, C#, Go, Rust, Swift, Kotlin
+
+**Web Technologies:** HTML, CSS, SCSS, Vue, Svelte, React (JSX)
+
+**System Languages:** C, Assembly, Verilog, VHDL
+
+**Functional Languages:** Haskell, OCaml, F#, Clojure, Scheme
+
+**Data & Config:** JSON, YAML, XML, SQL, GraphQL
+
+[View complete list →](https://profile-line-of-code.vercel.app/api/languages)
+
+## Performance & Limits
+
+- **Caching**: Results cached for 1 hour for optimal performance
+- **Rate Limits**: 100 requests per 15 minutes for general use
+- **Badge Cache**: 5-minute cache for fast badge loading
+- **Language Detection**: Automatically ignores `node_modules`, build artifacts, and binary files
+
+## Self-Hosting
+
+Want to run your own instance? Here's how:
+
+### Prerequisites
+- Node.js 18+
+- GitHub Personal Access Token
+
+### Setup
+
+1. **Clone and install:**
    ```bash
    git clone https://github.com/verozhao/profile-line-of-code.git
    cd profile-line-of-code
    npm install
    ```
 
-2. Get a GitHub personal access token and add it to `.env`:
+2. **Configure environment:**
    ```bash
    cp .env.example .env
-   # Add GITHUB_TOKEN=your_token_here
+   # Add your GitHub token to .env:
+   # GITHUB_TOKEN=your_token_here
    ```
 
-3. Start the server:
+3. **Start development server:**
    ```bash
    npm run dev
    ```
 
-For deployment, I'm using Vercel but it works on any Node.js platform. Just make sure to set the `GITHUB_TOKEN` environment variable.
+4. **Deploy to production:**
+   - **Vercel**: Connect your GitHub repo at [vercel.com](https://vercel.com)
+   - **Railway**: Deploy at [railway.app](https://railway.app)
+   - **Any Node.js host**: Set `GITHUB_TOKEN` environment variable
 
-## Technical details
+## GitHub Actions Integration
 
-### Endpoints
+Automatically update your README badges:
 
-| Endpoint | Method | Description | Parameters |
-|----------|--------|-------------|------------|
-| `/api/user/{username}` | GET | Get user statistics | `username`, `refresh` (optional) |
-| `/api/user/{username}/badge` | GET | Generate badge | `username`, `style`, `language` (optional) |
-| `/api/user/{username}/card` | GET | Generate stats card | `username`, `theme` (optional) |
-| `/api/repo/{owner}/{repo}` | GET | Get repo statistics | `owner`, `repo`, `refresh` (optional) |
-| `/api/languages` | GET | List supported languages | None |
-| `/api/rate-limit` | GET | Check rate limit status | None |
-| `/health` | GET | Health check | None |
+```yaml
+name: Update Profile Stats
 
-### Languages I track
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Daily
+  workflow_dispatch:
 
-Currently detecting 50+ languages including JavaScript, TypeScript, Python, Java, C++, Go, Rust, HTML, CSS, and more. It automatically ignores things like `node_modules`, build artifacts, and other non-source files.
+jobs:
+  update-stats:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Update README
+      run: |
+        # Your badge update script here
+        git commit -am "Update stats [skip ci]"
+        git push
+```
 
-### Rate Limits
+## Examples
 
-- **General API**: 100 requests per 15 minutes
-- **Data Endpoints**: 30 requests per 15 minutes
-- **Badge Endpoints**: 200 requests per 5 minutes
+### Basic Usage
+```markdown
+![Lines of Code](https://profile-line-of-code.vercel.app/api/user/octocat/badge?style=total)
+```
 
-### Caching
+### Language Breakdown
+```markdown
+![JavaScript](https://profile-line-of-code.vercel.app/api/user/octocat/badge?style=language&language=JavaScript)
+![Python](https://profile-line-of-code.vercel.app/api/user/octocat/badge?style=language&language=Python)
+![TypeScript](https://profile-line-of-code.vercel.app/api/user/octocat/badge?style=language&language=TypeScript)
+```
 
-- **User Statistics**: Cached for 1 hour
-- **Repository Data**: Cached for 1 hour
-- **Badges**: Cached for 5 minutes
+### Complete Stats Card
+```markdown
+![Code Statistics](https://profile-line-of-code.vercel.app/api/user/octocat/card)
+```
 
-### Automation
+## Contributing
 
-I've set up GitHub Actions to automatically update the badges daily. The workflow is included in this repo if you want to use it.
+Contributions welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-## Implementation notes
+- 🐛 **Bug reports**: Open an issue with reproduction steps
+- 💡 **Feature requests**: Describe your use case
+- 🔧 **Pull requests**: Fork, create feature branch, submit PR
+- 📖 **Documentation**: Help improve the docs
 
-Built with Node.js and Express. Uses the GitHub API to fetch repository data and analyzes file contents to count lines. Results are cached to avoid hitting rate limits.
+## License
 
-The badges use the same color scheme as GitHub's language colors for consistency. Everything is generated as SVG so they're lightweight and scalable.
-
-## My stats
-
-Here's what the API shows for my own repositories:
-
-![Total Lines](https://profile-line-of-code.vercel.app/api/user/verozhao/badge?style=total)
-![JavaScript](https://profile-line-of-code.vercel.app/api/user/verozhao/badge?style=language&language=JavaScript)
-
-![Code Statistics](https://profile-line-of-code.vercel.app/api/user/verozhao/card)
+MIT License - see [LICENSE](LICENSE) for details.
 
 ---
+
+**Live API:** https://profile-line-of-code.vercel.app
 
 Built by [Vero Zhao](https://github.com/verozhao)
