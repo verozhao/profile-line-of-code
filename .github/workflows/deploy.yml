@@ -1,0 +1,42 @@
+name: Deploy API
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run lint
+    - run: npm run build
+    
+    # Test that the API can start
+    - name: Test API startup
+      run: |
+        npm start &
+        sleep 5
+        curl -f http://localhost:3000/health || exit 1
+        pkill node
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Deployment happens automatically via Vercel GitHub integration
+  # Just need to connect your repo at vercel.com
+  notification:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+    - name: Deployment ready
+      run: |
+        echo "✅ Tests passed! Your app is ready for deployment."
+        echo "🚀 Connect your repo at https://vercel.com/new to auto-deploy"
+        echo "🔧 Don't forget to add GITHUB_TOKEN environment variable"
