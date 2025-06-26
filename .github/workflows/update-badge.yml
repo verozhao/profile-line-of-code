@@ -1,0 +1,67 @@
+name: Update Profile Badges
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # Daily at 6 AM UTC
+  workflow_dispatch:
+    inputs:
+      username:
+        description: 'GitHub username to update'
+        required: false
+        default: ''
+
+jobs:
+  update-badges:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Generate badge data
+      id: badge
+      run: |
+        USERNAME="${{ github.event.inputs.username || github.repository_owner }}"
+        echo "Generating badges for user: $USERNAME"
+        
+        # Create badges directory if it doesn't exist
+        mkdir -p badges
+        
+        # Generate different badge types
+        node scripts/generate-badges.js "$USERNAME"
+        
+        echo "username=$USERNAME" >> $GITHUB_OUTPUT
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload badge artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: profile-badges-${{ steps.badge.outputs.username }}
+        path: badges/
+        retention-days: 30
+
+    - name: Update repository badges
+      run: |
+        USERNAME="${{ steps.badge.outputs.username }}"
+        
+        # Update README with new badge URLs if this is the owner's repo
+        if [[ "$USERNAME" == "${{ github.repository_owner }}" ]]; then
+          node scripts/update-readme-badges.js
+          
+          # Commit changes if any
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git diff --staged --quiet || git commit -m "🏷️ Update profile badges [skip ci]"
+          git push
+        fi
