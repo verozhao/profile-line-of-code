@@ -52,7 +52,7 @@ export class LineCounter {
     return commentPatterns.some(pattern => pattern.test(line));
   }
 
-  async countRepoLines(owner, repoName, branch = 'main') {
+  async countRepoLines(owner, repoName) {
     const languageStats = {};
     
     try {
@@ -65,7 +65,7 @@ export class LineCounter {
           languageStats[language] = {
             lines: 0,
             files: 0,
-            bytes: bytes,
+            bytes,
             code: 0,
             comments: 0,
             blank: 0,

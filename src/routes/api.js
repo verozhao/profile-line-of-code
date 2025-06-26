@@ -80,39 +80,41 @@ router.get('/user/:username/badge', badgeRateLimit, asyncHandler(async (req, res
   let badge;
   
   switch (style) {
-    case 'total':
-      const totalLines = Object.values(stats.languages).reduce((sum, lang) => sum + lang.lines, 0);
-      badge = badgeGenerator.createTotalLinesBadge(totalLines);
-      break;
+  case 'total': {
+    const totalLines = Object.values(stats.languages).reduce((sum, lang) => sum + lang.lines, 0);
+    badge = badgeGenerator.createTotalLinesBadge(totalLines);
+    break;
+  }
       
-    case 'language':
-      if (!language) {
-        return res.status(400).json({
-          error: 'Missing language parameter',
-          message: 'Language parameter is required for language-specific badges',
-        });
-      }
-      
-      const langStats = stats.languages[language];
-      if (!langStats) {
-        return res.status(404).json({
-          error: 'Language not found',
-          message: `No ${language} code found for user ${username}`,
-        });
-      }
-      
-      badge = badgeGenerator.createLanguageBadge(language, langStats.lines);
-      break;
-      
-    case 'repos':
-      badge = badgeGenerator.createRepoCountBadge(stats.processedRepos);
-      break;
-      
-    default:
+  case 'language': {
+    if (!language) {
       return res.status(400).json({
-        error: 'Invalid style',
-        message: 'Style must be one of: total, language, repos',
+        error: 'Missing language parameter',
+        message: 'Language parameter is required for language-specific badges',
       });
+    }
+      
+    const langStats = stats.languages[language];
+    if (!langStats) {
+      return res.status(404).json({
+        error: 'Language not found',
+        message: `No ${language} code found for user ${username}`,
+      });
+    }
+      
+    badge = badgeGenerator.createLanguageBadge(language, langStats.lines);
+    break;
+  }
+      
+  case 'repos':
+    badge = badgeGenerator.createRepoCountBadge(stats.processedRepos);
+    break;
+      
+  default:
+    return res.status(400).json({
+      error: 'Invalid style',
+      message: 'Style must be one of: total, language, repos',
+    });
   }
 
   // Cache the badge

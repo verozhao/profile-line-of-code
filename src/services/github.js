@@ -24,7 +24,7 @@ class GitHubService {
           }
         }
         throw error;
-      }
+      },
     );
   }
 
