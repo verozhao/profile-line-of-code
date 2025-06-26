@@ -145,34 +145,37 @@ app.use('/api', apiRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-// Start server
-const server = app.listen(config.port, () => {
-  console.log(`🚀 Profile Line of Code API running on port ${config.port}`);
-  console.log(`📊 Environment: ${config.nodeEnv}`);
-  console.log(`⚡ Cache TTL: ${config.cache.ttl} seconds`);
-  console.log(`🛡️  Rate limit: ${config.rateLimit.max} requests per ${Math.floor(config.rateLimit.windowMs / 60000)} minutes`);
-  
-  if (config.nodeEnv === 'development') {
-    console.log(`🔗 API docs: http://localhost:${config.port}/`);
-    console.log(`❤️  Health check: http://localhost:${config.port}/health`);
-  }
-});
-
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('📴 SIGTERM received, shutting down gracefully...');
-  server.close(() => {
-    console.log('💤 Process terminated');
-    process.exit(0);
+// For serverless deployment (Vercel) vs traditional server (Railway)
+if (process.env.VERCEL !== '1') {
+  // Start server for local development
+  const server = app.listen(config.port, () => {
+    console.log(`🚀 Profile Line of Code API running on port ${config.port}`);
+    console.log(`📊 Environment: ${config.nodeEnv}`);
+    console.log(`⚡ Cache TTL: ${config.cache.ttl} seconds`);
+    console.log(`🛡️  Rate limit: ${config.rateLimit.max} requests per ${Math.floor(config.rateLimit.windowMs / 60000)} minutes`);
+    
+    if (config.nodeEnv === 'development') {
+      console.log(`🔗 API docs: http://localhost:${config.port}/`);
+      console.log(`❤️  Health check: http://localhost:${config.port}/health`);
+    }
   });
-});
 
-process.on('SIGINT', () => {
-  console.log('📴 SIGINT received, shutting down gracefully...');
-  server.close(() => {
-    console.log('💤 Process terminated');
-    process.exit(0);
+  // Graceful shutdown
+  process.on('SIGTERM', () => {
+    console.log('📴 SIGTERM received, shutting down gracefully...');
+    server.close(() => {
+      console.log('💤 Process terminated');
+      process.exit(0);
+    });
   });
-});
+
+  process.on('SIGINT', () => {
+    console.log('📴 SIGINT received, shutting down gracefully...');
+    server.close(() => {
+      console.log('💤 Process terminated');
+      process.exit(0);
+    });
+  });
+}
 
 export default app;
