@@ -150,7 +150,7 @@ export class BadgeGenerator {
       .sort(([,a], [,b]) => b.lines - a.lines)
       .slice(0, 6);
 
-    const width = 500;
+    const width = 600;
     const height = 320;
     
     let svg = `
@@ -199,14 +199,14 @@ export class BadgeGenerator {
     <text x="65" y="40" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="18" font-weight="700" text-anchor="middle" fill="#f0f6fc">${this.formatNumber(totalLines)}</text>
     
     <!-- Repositories stat -->
-    <rect x="150" y="0" width="130" height="60" fill="#21262d" rx="8" stroke="#30363d" stroke-width="1"/>
-    <text x="215" y="20" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="11" font-weight="600" text-anchor="middle" fill="#f85149">REPOSITORIES</text>
-    <text x="215" y="40" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="18" font-weight="700" text-anchor="middle" fill="#f0f6fc">${totalRepos}</text>
+    <rect x="180" y="0" width="130" height="60" fill="#21262d" rx="8" stroke="#30363d" stroke-width="1"/>
+    <text x="245" y="20" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="11" font-weight="600" text-anchor="middle" fill="#f85149">REPOSITORIES</text>
+    <text x="245" y="40" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="18" font-weight="700" text-anchor="middle" fill="#f0f6fc">${totalRepos}</text>
     
     <!-- Languages stat -->
-    <rect x="300" y="0" width="130" height="60" fill="#21262d" rx="8" stroke="#30363d" stroke-width="1"/>
-    <text x="365" y="20" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="11" font-weight="600" text-anchor="middle" fill="#3fb950">LANGUAGES</text>
-    <text x="365" y="40" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="18" font-weight="700" text-anchor="middle" fill="#f0f6fc">${Object.keys(languages).length}</text>
+    <rect x="360" y="0" width="130" height="60" fill="#21262d" rx="8" stroke="#30363d" stroke-width="1"/>
+    <text x="425" y="20" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="11" font-weight="600" text-anchor="middle" fill="#3fb950">LANGUAGES</text>
+    <text x="425" y="40" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="18" font-weight="700" text-anchor="middle" fill="#f0f6fc">${Object.keys(languages).length}</text>
   </g>
   
   <!-- Languages section -->
@@ -217,21 +217,21 @@ export class BadgeGenerator {
     topLanguages.forEach(([language, stats], index) => {
       const y = index * 15;
       const percentage = ((stats.lines / totalLines) * 100).toFixed(1);
-      const barWidth = Math.max((stats.lines / totalLines) * 350, 8); // Minimum width for visibility
+      const barWidth = Math.max((stats.lines / totalLines) * 420, 8); // Minimum width for visibility
       const color = this.languageColors[language] || '#58a6ff';
       
       svg += `
     <!-- Language ${index + 1}: ${language} -->
     <g transform="translate(0, ${y})">
       <!-- Progress bar background -->
-      <rect x="0" y="2" width="350" height="8" fill="#21262d" rx="4"/>
+      <rect x="0" y="2" width="420" height="8" fill="#21262d" rx="4"/>
       <!-- Progress bar fill -->
       <rect x="0" y="2" width="${barWidth}" height="8" fill="${color}" rx="4" opacity="0.8"/>
       <!-- Language name -->
-      <circle cx="365" cy="6" r="4" fill="${color}"/>
-      <text x="375" y="10" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#f0f6fc">${language}</text>
+      <circle cx="435" cy="6" r="4" fill="${color}"/>
+      <text x="445" y="10" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="12" fill="#f0f6fc">${language}</text>
       <!-- Percentage -->
-      <text x="440" y="10" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="11" fill="#8b949e" text-anchor="end">${percentage}%</text>
+      <text x="540" y="10" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="11" fill="#8b949e" text-anchor="end">${percentage}%</text>
     </g>`;
     });
 
