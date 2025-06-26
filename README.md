@@ -2,7 +2,7 @@
 
 Track your coding activity across all your GitHub repositories. Get detailed statistics by programming language and generate beautiful badges for your README files.
 
-**The Story**: As a CS student, I was once asked "How many lines of code have you written?" and I had no idea. This question made me realize I wanted to track my coding journey and see my progress over time. That's why I built this API - to help developers (including myself) understand their coding habits and showcase their work with beautiful, data-driven badges.
+> **The Story**: As a CS student, I was once asked "How many lines of code have you written?" and I had no idea. This question made me realize I wanted to track my coding journey and see my progress over time. That's why I built this API - to help developers (including myself) understand their coding habits and showcase their work with beautiful, data-driven badges.
 
 [![Total Lines of Code](https://profile-line-of-code.vercel.app/api/user/verozhao/badge?style=total)](https://profile-line-of-code.vercel.app)
 [![Repositories](https://profile-line-of-code.vercel.app/api/user/verozhao/badge?style=repos)](https://profile-line-of-code.vercel.app)
