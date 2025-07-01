@@ -26,10 +26,8 @@ jobs:
         curl -f http://localhost:3000/health || exit 1
         pkill node
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PROFILE_LINE_OF_CODE_SUMMARY_TOKEN }}
 
-  # Deployment happens automatically via Vercel GitHub integration
-  # Just need to connect your repo at vercel.com
   notification:
     needs: test
     runs-on: ubuntu-latest
@@ -37,6 +35,4 @@ jobs:
     steps:
     - name: Deployment ready
       run: |
-        echo "✅ Tests passed! Your app is ready for deployment."
-        echo "🚀 Connect your repo at https://vercel.com/new to auto-deploy"
-        echo "🔧 Don't forget to add GITHUB_TOKEN environment variable"
+        echo "Tests passed! The app is ready for deployment."
