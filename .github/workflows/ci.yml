@@ -34,5 +34,5 @@ jobs:
         # Test that the app can start without errors
         timeout 10s npm start || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PROFILE_LINE_OF_CODE_SUMMARY_TOKEN }}
         NODE_ENV: test
